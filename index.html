@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>NEX SEGUROS - Envio de Ordem de Serviço</title>
+    <link rel="preconnect" href="https://unpkg.com" />
+    <link rel="preconnect" href="https://api.qrserver.com" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#solicitacao" aria-label="NEX Seguros">
+        <img id="brandLogo" src="./nex-logo.png" alt="Logo NEX Seguro" />
+      </a>
+      <nav class="top-actions" aria-label="Ações principais">
+        <a id="whatsappBtn" class="btn btn-whatsapp" target="_blank" rel="noreferrer">
+          <span data-lucide="message-circle"></span>
+          Acionar seguro
+        </a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="intro-band">
+        <div class="intro-copy">
+          <p class="eyebrow">Proteção e garantia estendida</p>
+          <h1 id="pageTitle">NEX SEGUROS - Envio de Ordem de Serviço</h1>
+          <p id="pageSubtitle">
+            Envie sua OS, confira a taxa automaticamente, pague via PIX e anexe o comprovante para concluir sua solicitação.
+          </p>
+        </div>
+        <div class="payment-summary" aria-live="polite">
+          <span>Valor a pagar</span>
+          <strong id="heroPayAmount">R$ 0,00</strong>
+          <small>Atualizado em tempo real</small>
+        </div>
+      </section>
+
+      <section class="workspace" id="solicitacao">
+        <form class="form-shell" id="serviceForm" novalidate>
+          <div class="section-heading">
+            <span data-lucide="clipboard-list"></span>
+            <div>
+              <h2>Dados do cliente</h2>
+              <p>Preencha as informações para gerar o protocolo.</p>
+            </div>
+          </div>
+
+          <div class="grid two">
+            <label>
+              Nome completo
+              <input id="clientName" name="clientName" autocomplete="name" required placeholder="Digite seu nome completo" />
+            </label>
+            <label>
+              CPF
+              <input id="clientCpf" name="clientCpf" inputmode="numeric" autocomplete="off" required placeholder="000.000.000-00" />
+            </label>
+            <label>
+              Telefone com WhatsApp
+              <input id="clientPhone" name="clientPhone" inputmode="tel" autocomplete="tel" required placeholder="(00) 00000-0000" />
+            </label>
+            <label>
+              E-mail
+              <input id="clientEmail" name="clientEmail" type="email" autocomplete="email" required placeholder="email@exemplo.com" />
+            </label>
+          </div>
+
+          <div class="section-heading">
+            <span data-lucide="wrench"></span>
+            <div>
+              <h2>Dados do serviço</h2>
+              <p>Informe a oficina e o valor da OS.</p>
+            </div>
+          </div>
+
+          <div class="grid two">
+            <label>
+              Nome da oficina
+              <input id="shopName" name="shopName" required placeholder="Nome da oficina" />
+            </label>
+            <label>
+              Valor da Ordem de Serviço
+              <input id="serviceValue" name="serviceValue" inputmode="numeric" required placeholder="R$ 0,00" />
+            </label>
+          </div>
+
+          <div class="calc-panel">
+            <div class="highlight-total">
+              <span>Valor a pagar</span>
+              <strong id="displayTotal">R$ 0,00</strong>
+            </div>
+          </div>
+
+          <section class="pix-section" aria-labelledby="pixTitle">
+            <div class="pix-content">
+              <div>
+                <p class="eyebrow">Pagamento PIX</p>
+                <h2 id="pixTitle">Pagamento da Taxa Nex Seguros</h2>
+                <p>Após realizar o pagamento, anexe o comprovante abaixo para concluir sua solicitação.</p>
+                <div class="pix-key-row">
+                  <input id="pixKeyDisplay" readonly />
+                  <button class="btn btn-secondary" type="button" id="copyPixBtn">
+                    <span data-lucide="copy"></span>
+                    Copiar chave PIX
+                  </button>
+                </div>
+              </div>
+              <div class="qr-box">
+                <img id="pixQrCode" alt="QR Code PIX" />
+                <span id="qrAmountText">Digite o valor da OS</span>
+              </div>
+            </div>
+          </section>
+
+          <div class="section-heading">
+            <span data-lucide="paperclip"></span>
+            <div>
+              <h2>Anexos</h2>
+              <p>Envie JPG, JPEG, PNG ou PDF com até 10 MB por arquivo.</p>
+            </div>
+          </div>
+
+          <div class="grid two">
+            <label class="file-box">
+              Foto ou PDF da Ordem de Serviço
+              <input id="serviceFile" name="serviceFile" type="file" accept=".jpg,.jpeg,.png,.pdf,image/jpeg,image/png,application/pdf" required />
+              <span id="serviceFileName">Nenhum arquivo selecionado</span>
+            </label>
+            <label class="file-box">
+              Comprovante de pagamento PIX
+              <input id="paymentFile" name="paymentFile" type="file" accept=".jpg,.jpeg,.png,.pdf,image/jpeg,image/png,application/pdf" required />
+              <span id="paymentFileName">Nenhum arquivo selecionado</span>
+            </label>
+          </div>
+
+          <div class="form-footer">
+            <p id="formMessage" role="status"></p>
+            <button class="btn btn-primary" type="submit">
+              <span data-lucide="send"></span>
+              Enviar solicitação
+            </button>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <button class="admin-entry" type="button" id="openAdminBtn">
+        <span data-lucide="lock-keyhole"></span>
+        Acesso administrativo
+      </button>
+    </footer>
+
+    <dialog class="modal" id="adminModal">
+      <div class="modal-header">
+        <div>
+          <p class="eyebrow">Área administrativa</p>
+          <h2>Painel NEX Seguros</h2>
+        </div>
+        <button class="icon-btn" type="button" data-close-modal aria-label="Fechar">
+          <span data-lucide="x"></span>
+        </button>
+      </div>
+
+      <section id="loginPanel" class="admin-login">
+        <label>
+          E-mail
+          <input id="adminEmail" type="email" autocomplete="username" placeholder="admin@email.com" />
+        </label>
+        <label>
+          Senha
+          <input id="adminPassword" type="password" autocomplete="current-password" placeholder="Digite sua senha" />
+        </label>
+        <p id="loginMessage" role="status"></p>
+        <button class="btn btn-primary" type="button" id="loginBtn">
+          <span data-lucide="log-in"></span>
+          Entrar
+        </button>
+      </section>
+
+      <section id="adminPanel" class="admin-panel hidden">
+        <div class="admin-toolbar">
+          <div class="search-field">
+            <span data-lucide="search"></span>
+            <input id="adminSearch" placeholder="Pesquisar por pessoa, CPF, telefone, oficina ou valor" />
+          </div>
+          <button class="btn btn-secondary" type="button" id="exportBtn">
+            <span data-lucide="file-spreadsheet"></span>
+            Exportar Excel
+          </button>
+          <button class="btn btn-ghost" type="button" id="logoutBtn">
+            <span data-lucide="log-out"></span>
+            Sair
+          </button>
+        </div>
+
+        <div class="admin-tabs" role="tablist" aria-label="Painel administrativo">
+          <button class="tab active" type="button" data-tab="requests">Solicitações</button>
+          <button class="tab" type="button" data-tab="users">Usuários</button>
+          <button class="tab" type="button" data-tab="settings">Layout e PIX</button>
+        </div>
+
+        <div class="tab-panel" id="requestsTab">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Cliente</th>
+                  <th>CPF</th>
+                  <th>Telefone</th>
+                  <th>Oficina</th>
+                  <th>Valor da OS</th>
+                  <th>Taxa</th>
+                  <th>Status</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="requestsTable"></tbody>
+            </table>
+          </div>
+          <p class="empty-state" id="emptyRequests">Nenhuma solicitação encontrada.</p>
+        </div>
+
+        <div class="tab-panel hidden" id="usersTab">
+          <div class="editor-grid">
+            <form id="userForm" class="editor-box">
+              <h3>Criar pessoa autorizada</h3>
+              <label>
+                Nome
+                <input id="newUserName" required placeholder="Nome do usuário" />
+              </label>
+              <label>
+                E-mail
+                <input id="newUserEmail" type="email" required placeholder="email@exemplo.com" />
+              </label>
+              <label>
+                Senha
+                <input id="newUserPassword" required placeholder="Senha de acesso" />
+              </label>
+              <button class="btn btn-primary" type="submit">
+                <span data-lucide="user-plus"></span>
+                Adicionar usuário
+              </button>
+            </form>
+            <div class="editor-box">
+              <h3>Usuários autorizados</h3>
+              <div id="usersList" class="list-stack"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-panel hidden" id="settingsTab">
+          <form id="settingsForm" class="editor-grid">
+            <div class="editor-box">
+              <h3>Conteúdo da página</h3>
+              <label>
+                Título
+                <input id="settingTitle" />
+              </label>
+              <label>
+                Subtítulo
+                <textarea id="settingSubtitle" rows="3"></textarea>
+              </label>
+              <label>
+                Chave PIX
+                <input id="settingPixKey" />
+              </label>
+              <label>
+                WhatsApp de atendimento
+                <input id="settingWhatsapp" />
+              </label>
+            </div>
+            <div class="editor-box">
+              <h3>Aparência</h3>
+              <label>
+                Cor azul petróleo
+                <input id="settingPrimary" type="color" />
+              </label>
+              <label>
+                Cor amarela
+                <input id="settingAccent" type="color" />
+              </label>
+              <label>
+                Nova logo
+                <input id="settingLogo" type="file" accept=".jpg,.jpeg,.png,image/jpeg,image/png" />
+              </label>
+              <button class="btn btn-primary" type="submit">
+                <span data-lucide="save"></span>
+                Salvar alterações
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+    </dialog>
+
+    <dialog class="modal detail-modal" id="detailModal">
+      <div class="modal-header">
+        <div>
+          <p class="eyebrow">Solicitação individual</p>
+          <h2 id="detailTitle">Detalhes da OS</h2>
+        </div>
+        <button class="icon-btn" type="button" data-close-detail aria-label="Fechar">
+          <span data-lucide="x"></span>
+        </button>
+      </div>
+      <div id="detailContent" class="detail-content"></div>
+    </dialog>
+
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>
